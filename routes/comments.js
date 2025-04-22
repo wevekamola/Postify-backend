@@ -3,11 +3,18 @@ const axios = require("axios");
 const router = express.Router();
 
 router.get("/:postId", async (req, res) => {
+  const { postId } = req.params;
+
   try {
-    const response = await axios.get(`https://jsonplaceholder.typicode.com/posts/${req.params.postId}/comments`);
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch comments" });
+    const { data } = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts/${postId}/comments`
+    );
+    res.json(data);
+  } catch (error) {
+    console.error(`Error fetching comments for post ${postId}:`, error.message);
+    res.status(error.response?.status || 500).json({
+      error: "Failed to fetch comments",
+    });
   }
 });
 
